@@ -21,27 +21,13 @@
         />
         <label for="toggle-all"></label>
         <ul class="todo-list">
-          <li
+          <Task
             v-for="todo in filteredTodos"
+            :todo="todo"
             class="todo"
             :key="todo.id"
-            :class="{ completed: todo.completed, editing: todo == editedTodo }"
-          >
-            <div class="view">
-              <input class="toggle" type="checkbox" v-model="todo.completed" />
-              <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
-              <button class="destroy" @click="removeTodo(todo)"></button>
-            </div>
-            <input
-              class="edit"
-              type="text"
-              v-model="todo.title"
-              v-todo-focus="todo == editedTodo"
-              @blur="doneEdit(todo)"
-              @keyup.enter="doneEdit(todo)"
-              @keyup.esc="cancelEdit(todo)"
-            />
-          </li>
+            @remove-todo="removeTodo"
+          ></Task>
         </ul>
       </section>
       <footer class="footer" v-show="todos.length" v-cloak>
@@ -78,6 +64,8 @@
 </template>
 
 <script>
+import Task from './components/Task.vue'
+
 var STORAGE_KEY = "todos-vuejs-2.0";
 var todoStorage = {
   fetch: function() {
@@ -112,6 +100,7 @@ var filters = {
 export default {
   name: 'app',
   components: {
+    Task
   },
   data: function() {
     return {
@@ -170,39 +159,12 @@ export default {
       this.todos.splice(this.todos.indexOf(todo), 1);
     },
 
-    editTodo: function(todo) {
-      this.beforeEditCache = todo.title;
-      this.editedTodo = todo;
-    },
-    doneEdit: function (todo) {
-      if (!this.editedTodo) {
-        return;
-      }
-      this.editedTodo = null;
-      todo.title = todo.title.trim();
-      if (!todo.title) {
-        this.removeTodo(todo);
-      }
-    },
-
-    cancelEdit: function (todo) {
-      this.editedTodo = null;
-      todo.title = this.beforeEditCache;
-    },
-
     removeCompleted: function () {
       this.todos = filters.active(this.todos);
     },
 
     filtering: function(filterName) {
       this.visibility = filterName;
-    }
-  },
-  directives: {
-    "todo-focus": function(el, binding) {
-      if (binding.value) {
-        el.focus;
-      }
     }
   }
 }
