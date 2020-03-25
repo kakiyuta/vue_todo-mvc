@@ -1,5 +1,10 @@
 # todo-mvc
 
+## 概要
+
+以下のサイトを参考にTODOアプリを作成。
+https://jp.vuejs.org/v2/examples/todomvc.html
+
 ## Project setup
 ```
 npm install
